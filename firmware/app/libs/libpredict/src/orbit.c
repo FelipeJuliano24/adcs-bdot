@@ -1,4 +1,3 @@
-#include <endian.h>
 #include <errno.h>
 #include <math.h>
 #include <stddef.h>
@@ -160,9 +159,13 @@ static double deserialize_double( const uint8_t * buf )
     double value = 0.0;
     uint64_t temp = 0U;
 
-    ( void ) memcpy( &temp, buf, sizeof( temp ) );
-
-    temp = be64toh( temp );
+    temp = ( ( uint64_t ) buf[ 0 ] << 56UL ) |
+           ( ( uint64_t ) buf[ 1 ] << 48UL ) |
+           ( ( uint64_t ) buf[ 2 ] << 40UL ) |
+           ( ( uint64_t ) buf[ 3 ] << 32UL ) |
+           ( ( uint64_t ) buf[ 4 ] << 24U ) |
+           ( ( uint64_t ) buf[ 5 ] << 16UL ) |
+           ( ( uint64_t ) buf[ 6 ] << 8UL ) | ( ( uint64_t ) buf[ 7 ] );
 
     ( void ) mempcpy( &value, &temp, sizeof( value ) );
 
@@ -174,9 +177,8 @@ static float deserialize_float( const uint8_t * buf )
     float value = 0.0;
     uint32_t temp = 0U;
 
-    ( void ) memcpy( &temp, buf, sizeof( temp ) );
-
-    temp = be32toh( temp );
+    temp = ( buf[ 0 ] << 24U ) | ( buf[ 1 ] << 16U ) | ( buf[ 2 ] << 8U ) |
+           buf[ 3 ];
 
     ( void ) mempcpy( &value, &temp, sizeof( value ) );
 
