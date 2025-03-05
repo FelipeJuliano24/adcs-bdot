@@ -163,11 +163,11 @@ static double deserialize_double( const uint8_t * buf )
            ( ( uint64_t ) buf[ 1 ] << 48UL ) |
            ( ( uint64_t ) buf[ 2 ] << 40UL ) |
            ( ( uint64_t ) buf[ 3 ] << 32UL ) |
-           ( ( uint64_t ) buf[ 4 ] << 24U ) |
+           ( ( uint64_t ) buf[ 4 ] << 24UL ) |
            ( ( uint64_t ) buf[ 5 ] << 16UL ) |
            ( ( uint64_t ) buf[ 6 ] << 8UL ) | ( ( uint64_t ) buf[ 7 ] );
 
-    ( void ) mempcpy( &value, &temp, sizeof( value ) );
+    ( void ) memcpy( &value, &temp, sizeof( value ) );
 
     return value;
 }
@@ -177,10 +177,12 @@ static float deserialize_float( const uint8_t * buf )
     float value = 0.0;
     uint32_t temp = 0U;
 
-    temp = ( buf[ 0 ] << 24U ) | ( buf[ 1 ] << 16U ) | ( buf[ 2 ] << 8U ) |
-           buf[ 3 ];
+    temp = ( ( uint32_t ) buf[ 0 ] << 24UL ) |
+           ( ( uint32_t ) buf[ 1 ] << 16UL ) |
+           ( ( uint32_t ) buf[ 2 ] << 8UL ) |
+           ( ( uint32_t ) buf[ 3 ] );
 
-    ( void ) mempcpy( &value, &temp, sizeof( value ) );
+    ( void ) memcpy( &value, &temp, sizeof( value ) );
 
     return value;
 }
@@ -202,9 +204,10 @@ predict_orbital_elements_t * predict_parse_compact_tle(
                                        ( uint32_t ) compact_tle[ 1 ] );
         m->epoch_day = deserialize_double( &compact_tle[ 2 ] );
 
-        ( void ) memcpy( &tecc, &compact_tle[ 10 ], sizeof( tecc ) );
+        tecc = ( compact_tle[ 10 ] << 24U ) | ( compact_tle[ 11 ] << 16U ) |
+               ( compact_tle[ 12 ] << 8U ) | compact_tle[ 13 ];
 
-        m->eccentricity = ( double ) be32toh( tecc );
+        m->eccentricity = ( double ) tecc;
         m->eccentricity *= 1.0e-07;
 
         m->mean_anomaly = ( double ) deserialize_float( &compact_tle[ 14 ] );
