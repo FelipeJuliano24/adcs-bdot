@@ -204,8 +204,10 @@ predict_orbital_elements_t * predict_parse_compact_tle(
                                        ( uint32_t ) compact_tle[ 1 ] );
         m->epoch_day = deserialize_double( &compact_tle[ 2 ] );
 
-        tecc = ( compact_tle[ 10 ] << 24U ) | ( compact_tle[ 11 ] << 16U ) |
-               ( compact_tle[ 12 ] << 8U ) | compact_tle[ 13 ];
+        tecc = ( ( uint32_t ) compact_tle[ 10 ] << 24U ) |
+               ( ( uint32_t ) compact_tle[ 11 ] << 16U ) |
+               ( ( uint32_t ) compact_tle[ 12 ] << 8U ) |
+               ( ( uint32_t ) compact_tle[ 13 ] );
 
         m->eccentricity = ( double ) tecc;
         m->eccentricity *= 1.0e-07;
