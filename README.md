@@ -1,28 +1,28 @@
 <h1 align="center">
-    SLCam
+    ADCS BDOT
     <br>
 </h1>
 
-<h4 align="center">Camera payload designed and developed by SpaceLab.</h4>
+<h4 align="center">ADCS BDOT version designed and developed by SpaceLab.</h4>
 
 <p align="center">
     <a href="https://github.com/spacelab-ufsc/spacelab#versioning">
-        <img src="https://img.shields.io/badge/status-in%20development-red?style=for-the-badge">
+       <img src="https://img.shields.io/badge/status-in%20development-red?style=for-the-badge"> 
     </a>
-    <a href="https://github.com/spacelab-ufsc/slcam/releases">
-        <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/spacelab-ufsc/slcam?style=for-the-badge">
+    <a href="https://github.com/FelipeJuliano24/adcs-bdot/releases">
+        <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/FelipeJuliano24/adcs-bdot?style=for-the-badge"> 
     </a>
-    <a href="https://github.com/spacelab-ufsc/slcam/releases">
-        <img alt="GitHub commits since latest release (by date)" src="https://img.shields.io/github/commits-since/spacelab-ufsc/slcam/latest?style=for-the-badge">
+    <a href="https://github.com/FelipeJuliano24/adcs-bdot/releases">
+      <img alt="GitHub commits since latest release (by date)" src="https://img.shields.io/github/commits-since/FelipeJuliano24/adcs-bdot/latest?style=for-the-badge"> 
     </a>
-    <a href="https://github.com/spacelab-ufsc/slcam/commits/main">
-        <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/spacelab-ufsc/slcam?style=for-the-badge">
+    <a href="https://github.com/FelipeJuliano24/adcs-bdot/commits/main">
+        <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/FelipeJuliano24/adcs-bdot?style=for-the-badge">-->
     </a>
-    <a href="https://github.com/spacelab-ufsc/slcam/issues">
-        <img alt="GitHub issues" src="https://img.shields.io/github/issues/spacelab-ufsc/slcam?style=for-the-badge">
+    <a href="https://github.com/FelipeJuliano24/adcs-bdot/issues">
+        <img alt="GitHub issues" src="https://img.shields.io/github/issues/FelipeJuliano24/adcs-bdot?style=for-the-badge">
     </a>
-    <a href="https://github.com/spacelab-ufsc/slcam/graphs/contributors">
-        <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/spacelab-ufsc/slcam?color=yellow&style=for-the-badge">
+    <a href="https://github.com/FelipeJuliano24/adcs-bdot/graphs/contributors">
+        <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/FelipeJuliano24/adcs-bdot?color=yellow&style=for-the-badge">
     </a>
 </p>
 
@@ -34,12 +34,12 @@
 </p>
 
 <p align="center">
-    <img width="70%" src="https://github.com/spacelab-ufsc/slcam/blob/dev_mechanical/mechanical/outputs/slcam.png">
+   <!--   <img width="70%" src="https://github.com/spacelab-ufsc/slcam/blob/dev_mechanical/mechanical/outputs/slcam.png">-->
 </p>
 
 ## Overview
 
-The SLCam ("SpaceLab Camera") is a camera payload designed to be used in nanosatellite missions. The main object is to take pictures of the Earth from space. It's the first project from SpaceLab using cameras in payloads.
+The ADCS BDOT version is an attitude control system designed to be used in nanosatellite missions. The main object is stabilize the satellite in space. It's the first project from SpaceLab using active attitude control systems.
 
 ## Repository Organization
 
@@ -47,7 +47,6 @@ The SLCam ("SpaceLab Camera") is a camera payload designed to be used in nanosat
 * firmware: Firmware project (sources and configs).
 * hardware: Hardware project (sources and outputs).
 * mechanical: Mechanical project (sources and outputs).
-* software: Software to communicate with the camera (sources).
 
 ## License
 
@@ -55,7 +54,7 @@ This project is open-source under three different licenses: GNU General Public L
 
 ## Releases
 
-The SLCam software and hardware releases are synchronized in order to garantee compatibility. Then, using diferent versions might lead to unpredictable behavior. Refer to the [documentation](https://github.com/spacelab-ufsc/slcam/tree/main/doc) for compatibility notes.
+The ADCS BDOT version software and hardware releases are synchronized in order to garantee compatibility. Then, using diferent versions might lead to unpredictable behavior. Refer to the [documentation](https://github.com/FelipeJuliano24adcs-bdot/tree/main/doc) for compatibility notes.
 
 ## Notes
 
