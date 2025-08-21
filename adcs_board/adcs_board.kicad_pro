@@ -437,7 +437,7 @@
       "similar_labels": "warning",
       "similar_power": "warning",
       "simulation_model_issue": "ignore",
-      "single_global_label": "ignore",
+      "single_global_label": "warning",
       "unannotated": "error",
       "unconnected_wire_endpoint": "warning",
       "undefined_netclass": "error",
@@ -613,6 +613,22 @@
     [
       "28b5866e-000c-4f3b-b01c-a615d8361180",
       "Root"
+    ],
+    [
+      "29b4fc62-c280-471f-9f2d-910a4a75a4d1",
+      "mcu"
+    ],
+    [
+      "9d97a206-f6a8-4b23-88b0-be3df6e349fd",
+      "magnetometer"
+    ],
+    [
+      "19a7b818-1b70-4894-8cc6-d4183d3ca2c0",
+      "gyroscope"
+    ],
+    [
+      "9fa585b6-7f69-4784-8024-b73c1840fc12",
+      "coil_control"
     ]
   ],
   "text_variables": {}
