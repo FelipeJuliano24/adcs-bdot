@@ -4,6 +4,12 @@
 	(generator_version "9.0")
 	(uuid "03e2a7fe-30af-4596-99c0-0a74d6640ffc")
 	(paper "A4")
+	(title_block
+		(title "ADCS-BDOT")
+		(rev "v0.1")
+		(comment 1 "Felipe C. Juliano <felipecostajuliano@live.com>")
+		(comment 2 "felipecostajuliano@live.com")
+	)
 	(lib_symbols
 		(symbol "Device:C"
 			(pin_numbers
@@ -1415,7 +1421,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
 			(at 111.76 88.5952 0)
 			(effects
 				(font
@@ -1424,7 +1430,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/3584/CL10B105KP8NNNC_Spec.pdf"
 			(at 115.57 87.63 0)
 			(effects
 				(font
@@ -1433,8 +1439,26 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "CAP CER 1UF 10V X7R 0603"
 			(at 115.57 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 115.57 87.63 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer Part Number" "CL10B105KP8NNNC"
+			(at 115.57 87.63 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1656,6 +1680,91 @@
 	)
 	(symbol
 		(lib_id "Device:C")
+		(at 123.19 93.98 270)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "627e10f1-4acf-411a-9e4b-d51ba190d67d")
+		(property "Reference" "C14"
+			(at 119.888 91.948 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1uF"
+			(at 126.746 92.456 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+			(at 119.38 94.9452 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://mm.digikey.com/Volume0/opasdata/d220001/medias/docus/3584/CL10B105KP8NNNC_Spec.pdf"
+			(at 123.19 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "CAP CER 1UF 10V X7R 0603"
+			(at 123.19 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "Samsung Electro-Mechanics"
+			(at 123.19 93.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer Part Number" "CL10B105KP8NNNC"
+			(at 123.19 93.98 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "cf6c4c39-957f-445e-b3f3-94c8ad6c92ae")
+		)
+		(pin "1"
+			(uuid "a2913aea-dec2-47c3-bb5a-d5df1abebaf8")
+		)
+		(instances
+			(project "adcs_board"
+				(path "/28b5866e-000c-4f3b-b01c-a615d8361180/9d97a206-f6a8-4b23-88b0-be3df6e349fd"
+					(reference "C14")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
 		(at 171.45 88.9 270)
 		(unit 1)
 		(exclude_from_sim no)
@@ -1679,7 +1788,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
 			(at 167.64 89.8652 0)
 			(effects
 				(font
@@ -1688,7 +1797,7 @@
 				(hide yes)
 			)
 		)
-		(property "Datasheet" "~"
+		(property "Datasheet" "https://datasheets.kyocera-avx.com/KGF.pdf"
 			(at 171.45 88.9 0)
 			(effects
 				(font
@@ -1697,8 +1806,26 @@
 				(hide yes)
 			)
 		)
-		(property "Description" "Unpolarized capacitor"
+		(property "Description" "CAP CER 0.01UF 50V X7R 0603"
 			(at 171.45 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer" "KYOCERA AVX"
+			(at 171.45 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Manufacturer Part Number" "06035C103MAZ2A"
+			(at 171.45 88.9 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -2094,73 +2221,6 @@
 			(project "adcs_board"
 				(path "/28b5866e-000c-4f3b-b01c-a615d8361180/9d97a206-f6a8-4b23-88b0-be3df6e349fd"
 					(reference "R2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 123.19 93.98 270)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d444ebcf-41eb-4a22-b7b8-cdf4ad9277b8")
-		(property "Reference" "C14"
-			(at 119.634 92.71 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "1uF"
-			(at 126.492 92.71 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 119.38 94.9452 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 123.19 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 123.19 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "e28118df-d5e6-43ea-b8d1-0c2f29f233d9")
-		)
-		(pin "1"
-			(uuid "5c9c8443-b7bb-4a7f-8bb1-d50188e1f92b")
-		)
-		(instances
-			(project "adcs_board"
-				(path "/28b5866e-000c-4f3b-b01c-a615d8361180/9d97a206-f6a8-4b23-88b0-be3df6e349fd"
-					(reference "C14")
 					(unit 1)
 				)
 			)

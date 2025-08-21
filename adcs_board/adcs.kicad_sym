@@ -9,8 +9,8 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(property "Reference" "U"
-			(at 14.732 7.62 0)
+		(property "Reference" "U4"
+			(at 14.605 7.62 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -18,7 +18,7 @@
 			)
 		)
 		(property "Value" "BM1422AGMV-ZE2"
-			(at 14.732 5.08 0)
+			(at 14.605 5.08 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -139,60 +139,6 @@
 					(type none)
 				)
 			)
-			(pin power_in line
-				(at 0 0 0)
-				(length 7.62)
-				(name "AVDD"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "1"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin power_out line
-				(at 0 -2.54 0)
-				(length 7.62)
-				(name "GND"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "2"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 0 -5.08 0)
-				(length 7.62)
-				(name "VREG"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "3"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
 			(pin bidirectional line
 				(at 0 -7.62 0)
 				(length 7.62)
@@ -204,96 +150,6 @@
 					)
 				)
 				(number "4"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 0 -10.16 0)
-				(length 7.62)
-				(name "SDA"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "5"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin power_in line
-				(at 29.21 0 180)
-				(length 7.62)
-				(name "DVDD"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "10"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 29.21 -2.54 180)
-				(length 7.62)
-				(name "ADDR"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "9"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 29.21 -5.08 180)
-				(length 7.62)
-				(name "DRDY"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "8"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 29.21 -7.62 180)
-				(length 7.62)
-				(name "SCL"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "7"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -320,6 +176,152 @@
 				)
 			)
 		)
+		(symbol "BM1422AGMV-ZE2_1_1"
+			(pin power_out line
+				(at 0 0 0)
+				(length 7.62)
+				(name "AVDD"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 -2.54 0)
+				(length 7.62)
+				(name "GND"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at 0 -5.08 0)
+				(length 7.62)
+				(name "VREG"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 0 -10.16 0)
+				(length 7.62)
+				(name "SDA"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_out line
+				(at 29.21 0 180)
+				(length 7.62)
+				(name "DVDD"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "10"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 29.21 -2.54 180)
+				(length 7.62)
+				(name "ADDR"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "9"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 29.21 -5.08 180)
+				(length 7.62)
+				(name "DRDY"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 29.21 -7.62 180)
+				(length 7.62)
+				(name "SCL"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
 		(embedded_fonts no)
 	)
 	(symbol "DRV8210DSGR"
@@ -329,8 +331,8 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(property "Reference" "U"
-			(at 0 2.54 0)
+		(property "Reference" "U5"
+			(at 15.875 10.16 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -338,7 +340,7 @@
 			)
 		)
 		(property "Value" "DRV8210DSGR"
-			(at 0 0 0)
+			(at 15.875 7.62 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -495,24 +497,6 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 0 -10.16 0)
-				(length 5.08)
-				(name "MODE"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "7"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
 			(pin input line
 				(at 0 -15.24 0)
 				(length 5.08)
@@ -622,6 +606,26 @@
 				)
 			)
 		)
+		(symbol "DRV8210DSGR_1_1"
+			(pin power_in line
+				(at 0 -10.16 0)
+				(length 5.08)
+				(name "MODE"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "7"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
 		(embedded_fonts no)
 	)
 	(symbol "I3G4250DTR"
@@ -631,8 +635,8 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(property "Reference" "U"
-			(at 20.066 7.62 0)
+		(property "Reference" "U3"
+			(at 19.685 7.62 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -640,7 +644,7 @@
 			)
 		)
 		(property "Value" "I3G4250DTR"
-			(at 20.066 5.08 0)
+			(at 19.685 5.08 0)
 			(effects
 				(font
 					(size 1.524 1.524)
@@ -779,96 +783,6 @@
 					)
 				)
 			)
-			(pin unspecified line
-				(at 0 -2.54 0)
-				(length 7.62)
-				(name "SCL/SPC"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "2"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 0 -5.08 0)
-				(length 7.62)
-				(name "SDA/SDI/SDO"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "3"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 0 -7.62 0)
-				(length 7.62)
-				(name "SDO/SA0"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "4"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 0 -10.16 0)
-				(length 7.62)
-				(name "CS"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "5"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin unspecified line
-				(at 0 -12.7 0)
-				(length 7.62)
-				(name "DRDY/INT2"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "6"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
 			(pin input line
 				(at 0 -15.24 0)
 				(length 7.62)
@@ -880,24 +794,6 @@
 					)
 				)
 				(number "7"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-			)
-			(pin power_out line
-				(at 0 -17.78 0)
-				(length 7.62)
-				(name "RES"
-					(effects
-						(font
-							(size 1.27 1.27)
-						)
-					)
-				)
-				(number "8"
 					(effects
 						(font
 							(size 1.27 1.27)
@@ -941,7 +837,117 @@
 					)
 				)
 			)
-			(pin unspecified line
+		)
+		(symbol "I3G4250DTR_1_1"
+			(pin bidirectional line
+				(at 0 -2.54 0)
+				(length 7.62)
+				(name "SCL/SPC"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 0 -5.08 0)
+				(length 7.62)
+				(name "SDA/SDI/SDO"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 0 -7.62 0)
+				(length 7.62)
+				(name "SDO/SA0"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 0 -10.16 0)
+				(length 7.62)
+				(name "CS"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
+				(at 0 -12.7 0)
+				(length 7.62)
+				(name "DRDY/INT2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 -17.78 0)
+				(length 7.62)
+				(name "RES"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "8"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin bidirectional line
 				(at 39.37 -5.08 180)
 				(length 7.62)
 				(name "PLLFILT"
@@ -959,7 +965,7 @@
 					)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 39.37 -7.62 180)
 				(length 7.62)
 				(name "GND"
@@ -977,7 +983,7 @@
 					)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 39.37 -10.16 180)
 				(length 7.62)
 				(name "RES"
@@ -995,7 +1001,7 @@
 					)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 39.37 -12.7 180)
 				(length 7.62)
 				(name "RES"
@@ -1013,7 +1019,7 @@
 					)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 39.37 -15.24 180)
 				(length 7.62)
 				(name "RES"
@@ -1031,7 +1037,7 @@
 					)
 				)
 			)
-			(pin power_out line
+			(pin power_in line
 				(at 39.37 -17.78 180)
 				(length 7.62)
 				(name "RES"
@@ -1451,22 +1457,20 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(property "Reference" "U"
-			(at -20.32 41.275 0)
+		(property "Reference" "U1"
+			(at -5.08 45.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left bottom)
 			)
 		)
 		(property "Value" "STM32F103C8T6"
-			(at -20.32 -40.64 0)
+			(at -5.08 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left bottom)
 			)
 		)
 		(property "Footprint" "adcs:QFP50P900X900X160-48N"
@@ -1617,24 +1621,6 @@
 				)
 				(fill
 					(type background)
-				)
-			)
-			(pin bidirectional line
-				(at -25.4 30.48 0)
-				(length 5.08)
-				(name "VBAT"
-					(effects
-						(font
-							(size 1.016 1.016)
-						)
-					)
-				)
-				(number "1"
-					(effects
-						(font
-							(size 1.016 1.016)
-						)
-					)
 				)
 			)
 			(pin input line
@@ -2016,7 +2002,7 @@
 				)
 			)
 			(pin power_in line
-				(at 15.24 38.1 180)
+				(at 6.35 45.72 270)
 				(length 5.08)
 				(name "VDDA"
 					(effects
@@ -2034,7 +2020,7 @@
 				)
 			)
 			(pin power_in line
-				(at 15.24 35.56 180)
+				(at 15.24 30.48 180)
 				(length 5.08)
 				(name "VDD"
 					(effects
@@ -2052,7 +2038,7 @@
 				)
 			)
 			(pin power_in line
-				(at 15.24 33.02 180)
+				(at 15.24 27.94 180)
 				(length 5.08)
 				(name "VDD"
 					(effects
@@ -2070,7 +2056,7 @@
 				)
 			)
 			(pin power_in line
-				(at 15.24 30.48 180)
+				(at 15.24 25.4 180)
 				(length 5.08)
 				(name "VDD"
 					(effects
@@ -2375,42 +2361,6 @@
 					)
 				)
 			)
-			(pin bidirectional line
-				(at 15.24 -22.86 180)
-				(length 5.08)
-				(name "PD0_OSC_IN"
-					(effects
-						(font
-							(size 1.016 1.016)
-						)
-					)
-				)
-				(number "5"
-					(effects
-						(font
-							(size 1.016 1.016)
-						)
-					)
-				)
-			)
-			(pin bidirectional line
-				(at 15.24 -25.4 180)
-				(length 5.08)
-				(name "PD1_OSC_OUT"
-					(effects
-						(font
-							(size 1.016 1.016)
-						)
-					)
-				)
-				(number "6"
-					(effects
-						(font
-							(size 1.016 1.016)
-						)
-					)
-				)
-			)
 			(pin power_in line
 				(at 15.24 -29.21 180)
 				(length 5.08)
@@ -2476,6 +2426,62 @@
 					)
 				)
 				(number "47"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+			)
+		)
+		(symbol "STM32F103C8T6_1_0"
+			(pin input line
+				(at -25.4 -33.02 0)
+				(length 5.08)
+				(name "PD0_OSC_IN"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+				(number "5"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+			)
+			(pin output line
+				(at -25.4 -35.56 0)
+				(length 5.08)
+				(name "PD1_OSC_OUT"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+				(number "6"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at -16.51 45.72 270)
+				(length 5.08)
+				(name "VBAT"
+					(effects
+						(font
+							(size 1.016 1.016)
+						)
+					)
+				)
+				(number "1"
 					(effects
 						(font
 							(size 1.016 1.016)
