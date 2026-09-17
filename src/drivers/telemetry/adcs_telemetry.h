@@ -25,6 +25,9 @@
 #define HK_ADCS_TEMPERATURE 0x03
 #define HK_ADCS_FAULTS      0x04
 
+/* Appended to every HK payload: prediction status plus latitude/longitude. */
+#define ADCS_HK_ORBIT_LOCATION_PAYLOAD_SIZE 9U
+
 // =========================
 // ADCS TELEMETRY (dados de controle)
 // =========================
@@ -69,6 +72,13 @@
  *   [2] received frame size LSB
  */
 #define ADCS_TM_PARSER_ERROR_PAYLOAD_SIZE 3U
+
+/*
+ * Every housekeeping payload ends with:
+ *   [base]        orbit-prediction status
+ *   [base + 1..4] latitude in degrees, native IEEE-754 float
+ *   [base + 5..8] longitude in degrees, native IEEE-754 float
+ */
 
 void adcs_build_bdot_telemetry(
     pus_packet_t *pkt,

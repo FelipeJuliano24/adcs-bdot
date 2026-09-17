@@ -17,6 +17,7 @@
 /* Protótipo da tarefa do algoritmo B-dot de detumbling. */
 #include "tasks/bdot_task.h"
 #include "tasks/housekeeping_task.h"
+#include "tasks/orbit_prediction_task.h"
 #include "tasks/sendreports_task.h"
 
 
@@ -29,9 +30,11 @@ extern "C" rtems_task Init(rtems_task_argument argument) {
 
     rtems_id bdot_task_id;
     rtems_id housekeeping_task_id;
+    rtems_id orbit_prediction_task_id;
     rtems_id send_reports_task_id;
     rtems_name bdot_task_name = rtems_build_name('B', 'D', 'O', 'T');
     rtems_name housekeeping_task_name = rtems_build_name('H', 'K', 'E', 'P');
+    rtems_name orbit_prediction_task_name = rtems_build_name('O', 'R', 'B', 'T');
     rtems_name send_reports_task_name = rtems_build_name('T', 'M', 'T', 'X');
     rtems_status_code status;
 
@@ -66,7 +69,27 @@ extern "C" rtems_task Init(rtems_task_argument argument) {
         printk("Erro Crítico: Falha ao iniciar a tarefa B-dot (%s)\n", rtems_status_text(status));
     }
 
-    /* 3. Criação e início da task que gera housekeepings periódicos. */
+    /* 3. Criação da task de propagação orbital para o estado de housekeeping. */
+    status = orbit_prediction_init();
+    if (status == RTEMS_SUCCESSFUL) {
+        status = rtems_task_create(
+            orbit_prediction_task_name,
+            18,
+            RTEMS_MINIMUM_STACK_SIZE * 3,
+            RTEMS_DEFAULT_MODES,
+            RTEMS_DEFAULT_ATTRIBUTES,
+            &orbit_prediction_task_id
+        );
+    }
+    if (status == RTEMS_SUCCESSFUL) {
+        status = rtems_task_start(orbit_prediction_task_id, orbit_prediction_task, 0);
+    }
+    if (status != RTEMS_SUCCESSFUL) {
+        printk("Erro: Falha ao iniciar a tarefa de predicao orbital (%s)\n",
+               rtems_status_text(status));
+    }
+
+    /* 4. Criação e início da task que gera housekeepings periódicos. */
     status = rtems_task_create(
         housekeeping_task_name,
         20,
@@ -83,7 +106,7 @@ extern "C" rtems_task Init(rtems_task_argument argument) {
         printk("Erro: Falha ao iniciar a tarefa housekeeping (%s)\n", rtems_status_text(status));
     }
 
-    /* 4. Criação e início da task de downlink I2C de telemetria. */
+    /* 5. Criação e início da task de downlink I2C de telemetria. */
     status = rtems_task_create(
         send_reports_task_name,
         15,
@@ -100,7 +123,7 @@ extern "C" rtems_task Init(rtems_task_argument argument) {
         printk("Erro: Falha ao iniciar a tarefa de telemetria (%s)\n", rtems_status_text(status));
     }
 
-    /* 5. Limpeza: A tarefa Init finalizou o escalonamento inicial,
+    /* 6. Limpeza: A tarefa Init finalizou o escalonamento inicial,
           podemos deletá-la para liberar recursos do sistema. */
     printk("Setup concluído. Deletando tarefa Init.\n");
     rtems_task_delete(RTEMS_SELF);

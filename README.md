@@ -80,3 +80,27 @@ Build the modified kernel and install the final artifacts into the output direct
 ```bash
 make flash
 ```
+
+## Orbit prediction
+
+`libpredict` is compiled into the RTEMS application. The `orbit_prediction_task`
+propagates the configured TLE every 30 seconds, stores the sub-satellite
+latitude and longitude, and sends the unconsumed `RTEMS_EVENT_1` event once on
+each entry into the Brazil geofence. It does not command any subsystem.
+
+Configure the mission TLE during CMake configuration; do not use an unrelated
+example TLE for flight:
+
+```bash
+cmake -S . -B out \
+  -DORBIT_PREDICTION_TLE_LINE_1='<mission TLE line 1>' \
+  -DORBIT_PREDICTION_TLE_LINE_2='<mission TLE line 2>'
+```
+
+The RTEMS clock must first be set to valid UTC (for example, by GPS) or the
+prediction reports `INVALID_TIME`. If no valid TLE is configured, it reports
+`INVALID_TLE` and publishes zero coordinates instead of a fictitious position.
+
+Every housekeeping payload now ends with a 9-byte orbit record: prediction
+status (1 byte), latitude in degrees (IEEE-754 `float`, 4 bytes), and longitude
+in degrees (IEEE-754 `float`, 4 bytes).

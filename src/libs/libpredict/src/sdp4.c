@@ -347,6 +347,8 @@ void sdp4_deep_initialize( const predict_orbital_elements_t * tle,
         z21, z22, z23, z3, z31, z32, z33, ze, zn, zsing, zsinh, zsini, zcosg,
         zcosh, zcosi;
 
+    ( void ) tle;
+
     /* Entrance for deep space initialization */
     m->thgr = ThetaG( m->epoch, deep_arg );
     eq = m->eo;

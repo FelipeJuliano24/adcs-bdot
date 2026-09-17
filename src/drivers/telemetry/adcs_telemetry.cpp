@@ -7,6 +7,7 @@
 #include "../utils/HK_ADCS_STATUS.h"
 #include "../i3g4250d/i3g4250d.h"
 #include "../../rtems/queues/queues.h"
+#include "../../rtems/tasks/orbit_prediction_task.h"
 
 namespace {
 
@@ -22,6 +23,22 @@ void initialise_tm_packet(pus_packet_t *pkt, uint8_t subtype, uint16_t length)
 void put_float(uint8_t *destination, float value)
 {
     memcpy(destination, &value, sizeof(value));
+}
+
+void append_orbit_location(pus_packet_t *pkt, uint16_t base_length)
+{
+    float latitude_degrees = 0.0f;
+    float longitude_degrees = 0.0f;
+    uint8_t status = ORBIT_PREDICTION_STATUS_UNAVAILABLE;
+
+    (void) orbit_prediction_get_latest(
+        &latitude_degrees,
+        &longitude_degrees,
+        &status);
+    pkt->data[base_length] = status;
+    put_float(&pkt->data[base_length + 1U], latitude_degrees);
+    put_float(&pkt->data[base_length + 5U], longitude_degrees);
+    pkt->length = base_length + ADCS_HK_ORBIT_LOCATION_PAYLOAD_SIZE;
 }
 
 } // namespace
@@ -125,6 +142,7 @@ extern "C" int check_telemetry(pus_packet_t *pkt, bool hk, uint8_t subtype) {
                 pkt->data[1] = adcs_status == 0xff
                     ? ADCS_GYRO_STATUS_ERROR
                     : ADCS_GYRO_STATUS_VALID;
+                append_orbit_location(pkt, 2U);
                 break;
             }
 
@@ -134,6 +152,7 @@ extern "C" int check_telemetry(pus_packet_t *pkt, bool hk, uint8_t subtype) {
                 /* Power-monitor driver is not available yet. */
                 pkt->data[0] = 0xff;
                 pkt->data[1] = 0xff;
+                append_orbit_location(pkt, 2U);
                 break;
 
             case HK_ADCS_TEMPERATURE:
@@ -142,6 +161,7 @@ extern "C" int check_telemetry(pus_packet_t *pkt, bool hk, uint8_t subtype) {
                 /* Temperature driver is not available yet. */
                 pkt->data[0] = 0xff;
                 pkt->data[1] = 0xff;
+                append_orbit_location(pkt, 2U);
                 break;
 
             case HK_ADCS_FAULTS:
@@ -152,6 +172,7 @@ extern "C" int check_telemetry(pus_packet_t *pkt, bool hk, uint8_t subtype) {
                 pkt->length = 1;
                 /* Bit 0: I3G4250D/SPI communication unavailable. */
                 pkt->data[0] = adcs_status == 0xff ? 0x01 : 0x00;
+                append_orbit_location(pkt, 1U);
                 break;
             }
 
