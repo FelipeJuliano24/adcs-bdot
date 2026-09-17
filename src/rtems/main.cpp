@@ -106,7 +106,7 @@ extern "C" rtems_task Init(rtems_task_argument argument) {
         printk("Erro: Falha ao iniciar a tarefa housekeeping (%s)\n", rtems_status_text(status));
     }
 
-    /* 5. Criação e início da task de downlink I2C de telemetria. */
+    /* 5. Criação e início da task do enlace UART de telemetria/telecomando. */
     status = rtems_task_create(
         send_reports_task_name,
         15,

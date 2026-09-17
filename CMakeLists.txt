@@ -31,10 +31,10 @@ link_directories(${RTEMS_LIBRARY_DIRS})
 add_executable(app
 # --- DRIVERS ---
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/i3g4250d/i3g4250d.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/i2c/telemetry_i2c.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/spi_commons.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/telemetry/adcs_telemetry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/telemetry/telemetry.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/uart/obdh_uart.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/utils/HK_ADCS_STATUS.cpp
 # --- LIBS ---
     ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/libpredict/src/julian_date.c
@@ -52,7 +52,6 @@ add_executable(app
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pus/pus_dispatch.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pus/pus_parser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rtems/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/rtems/interrupts/uart_isr.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rtems/queues/queue.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rtems/tasks/bdot_task.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rtems/tasks/housekeeping_task.cpp

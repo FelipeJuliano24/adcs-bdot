@@ -5,7 +5,8 @@
 /* ========================================================= */
 #define CONFIGURE_APPLICATION_NEEDS_CLOCK_DRIVER
 
-// Não ative CONSOLE DRIVER, o projeto utiliza driver de UART fora do BSP
+// USART3 é controlada pelo driver da aplicação para o enlace PUS/OBDH.
+// Não ative o console BSP nesta UART, pois ele disputaria a mesma interrupção.
 //#define CONFIGURE_APPLICATION_NEEDS_CONSOLE_DRIVER
 
 /* ========================================================= */
@@ -16,7 +17,7 @@
 /* ========================================================= */
 /* 3. Limites de Recursos do Sistema Operacional             */
 /* ========================================================= */
-#define CONFIGURE_MAXIMUM_TASKS 5        /* Init + B-dot + orbit + housekeeping + telemetry TX */
+#define CONFIGURE_MAXIMUM_TASKS 5        /* Init + B-dot + orbit + housekeeping + OBDH UART */
 #define CONFIGURE_MAXIMUM_SEMAPHORES 5   
 #define CONFIGURE_MAXIMUM_TIMERS 2
 

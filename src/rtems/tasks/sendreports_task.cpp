@@ -1,7 +1,6 @@
 #include <rtems.h>
-#include <rtems/bspIo.h>
 
-#include "../../drivers/i2c/telemetry_i2c.h"
+#include "../../drivers/uart/obdh_uart.h"
 #include "../../drivers/telemetry/telemetry.h"
 #include "../../drivers/telemetry/adcs_telemetry.h"
 #include "../../pus/pus.h"
@@ -10,12 +9,21 @@
 
 namespace {
 
-constexpr rtems_interval I2C_REINITIALISATION_TICKS = 1000U;
-constexpr uint32_t I2C_FAILURE_LOG_INTERVAL = 100U;
-constexpr rtems_interval I2C_TC_POLL_TICKS = 100U;
-constexpr rtems_interval I2C_WORKER_TICKS = 10U;
+constexpr rtems_interval UART_REINITIALISATION_TICKS = 1000U;
+constexpr rtems_interval UART_WORKER_TICKS = 10U;
+constexpr uint8_t HDLC_FLAG = 0x7eU;
+constexpr uint8_t HDLC_ESCAPE = 0x7dU;
+constexpr uint8_t HDLC_ESCAPE_XOR = 0x20U;
 
-void report_i2c_receive_error(int error, uint16_t received_size)
+struct hdlc_decoder_t {
+    uint8_t frame[PUS_FRAME_MAX_SIZE];
+    uint16_t length;
+    bool in_frame;
+    bool escaped;
+    bool dropping;
+};
+
+void report_receive_error(int error, uint16_t received_size)
 {
     pus_packet_t error_packet;
 
@@ -23,70 +31,123 @@ void report_i2c_receive_error(int error, uint16_t received_size)
     (void) adcs_send_telemetry(&error_packet);
 }
 
-telemetry_i2c_status_t poll_obdh_telecommand(void)
+void report_link_error(const obdh_uart_rx_diagnostics_t &diagnostics)
 {
-    uint8_t length_bytes[2] = {0U, 0U};
-    telemetry_i2c_status_t status = telemetry_i2c_read_register(
-        TELEMETRY_I2C_TC_LENGTH_REGISTER,
-        length_bytes,
-        sizeof(length_bytes));
-
-    if (status != TELEMETRY_I2C_SUCCESS) {
-        return status;
+    if (diagnostics.flags == 0U && diagnostics.dropped_bytes == 0U) {
+        return;
     }
 
-    const uint16_t frame_size =
-        ((uint16_t) length_bytes[0] << 8U) | (uint16_t) length_bytes[1];
-    if (frame_size == 0U) {
-        return TELEMETRY_I2C_SUCCESS;
+    pus_packet_t error_packet;
+    adcs_build_uart_link_error_telemetry(
+        &error_packet,
+        diagnostics.flags,
+        diagnostics.dropped_bytes);
+    (void) adcs_send_telemetry(&error_packet);
+}
+
+void reset_decoder(hdlc_decoder_t *decoder)
+{
+    decoder->length = 0U;
+    decoder->escaped = false;
+    decoder->dropping = false;
+}
+
+void finish_decoder_frame(hdlc_decoder_t *decoder)
+{
+    if (!decoder->in_frame) {
+        return;
     }
 
-    if (frame_size < PUS_FRAME_HEADER_SIZE + PUS_FRAME_CRC_SIZE ||
-        frame_size > TELEMETRY_I2C_TC_MAX_FRAME_SIZE) {
-        report_i2c_receive_error(PUS_PARSE_ERROR_LENGTH, frame_size);
-        return TELEMETRY_I2C_SUCCESS;
+    if (decoder->escaped || decoder->dropping) {
+        report_receive_error(PUS_PARSE_ERROR_TRANSPORT, decoder->length);
+    } else if (decoder->length > 0U) {
+        pus_handle_rx(decoder->frame, decoder->length);
+    }
+}
+
+void decode_uart_byte(hdlc_decoder_t *decoder, uint8_t byte)
+{
+    if (byte == HDLC_FLAG) {
+        finish_decoder_frame(decoder);
+        decoder->in_frame = true;
+        reset_decoder(decoder);
+        return;
     }
 
-    uint8_t frame[TELEMETRY_I2C_TC_MAX_FRAME_SIZE];
-    status = telemetry_i2c_read_register(
-        TELEMETRY_I2C_TC_DATA_REGISTER,
-        frame,
-        frame_size);
-    if (status == TELEMETRY_I2C_SUCCESS) {
-        pus_handle_rx(frame, frame_size);
+    if (!decoder->in_frame || decoder->dropping) {
+        return;
     }
 
-    return status;
+    if (decoder->escaped) {
+        byte ^= HDLC_ESCAPE_XOR;
+        decoder->escaped = false;
+    } else if (byte == HDLC_ESCAPE) {
+        decoder->escaped = true;
+        return;
+    }
+
+    if (decoder->length >= PUS_FRAME_MAX_SIZE) {
+        decoder->dropping = true;
+        return;
+    }
+
+    decoder->frame[decoder->length++] = byte;
+}
+
+void receive_obdh_telecommands(hdlc_decoder_t *decoder)
+{
+    uint8_t byte = 0U;
+    while (obdh_uart_read_byte(&byte)) {
+        decode_uart_byte(decoder, byte);
+    }
 }
 
 } // namespace
 
 /*
- * Telemetry downlink task.
+ * OBDH telemetry and telecommand task.
  *
  * Every producer (B-dot, housekeeping and PUS parser errors) sends a
- * pus_packet_t to queue_tx.  This task turns it into a PUS wire frame and
- * sends that complete frame in one I2C master transaction.
+ * pus_packet_t to queue_tx.  This is the only UART transmitter; it serialises
+ * each raw PUS frame with HDLC-style flag/escape bytes.  The USART RX ISR only
+ * buffers bytes and signals this task, so parsing and command execution never
+ * run in interrupt context.
  */
 extern "C" rtems_task send_reports_task(rtems_task_argument argument)
 {
     (void) argument;
 
-    telemetry_i2c_status_t i2c_status = TELEMETRY_I2C_BUS_ERROR;
-    uint32_t consecutive_i2c_failures = 0U;
-    rtems_interval last_tc_poll = rtems_clock_get_ticks_since_boot();
-    while (i2c_status != TELEMETRY_I2C_SUCCESS) {
-        i2c_status = telemetry_i2c_init();
-        if (i2c_status != TELEMETRY_I2C_SUCCESS) {
-            printk("Telemetry I2C init failed: %d\n", (int) i2c_status);
-            rtems_task_wake_after(I2C_REINITIALISATION_TICKS);
+    rtems_status_code init_status = RTEMS_UNSATISFIED;
+    while (init_status != RTEMS_SUCCESSFUL) {
+        init_status = obdh_uart_init(rtems_task_self());
+        if (init_status != RTEMS_SUCCESSFUL) {
+            /* USART3 is the PUS link; never emit console bytes on this port. */
+            rtems_task_wake_after(UART_REINITIALISATION_TICKS);
         }
     }
+
+    hdlc_decoder_t decoder = {};
 
     while (true) {
         pus_packet_t packet;
         size_t received_size = 0U;
         uint8_t frame[PUS_FRAME_MAX_SIZE];
+
+        rtems_event_set events = 0U;
+        const rtems_status_code event_status = rtems_event_receive(
+            OBDH_UART_RX_EVENT,
+            RTEMS_EVENT_ANY | RTEMS_WAIT,
+            UART_WORKER_TICKS,
+            &events);
+
+        if (event_status == RTEMS_SUCCESSFUL &&
+            (events & OBDH_UART_RX_EVENT) != 0U) {
+            receive_obdh_telecommands(&decoder);
+        }
+
+        obdh_uart_rx_diagnostics_t diagnostics = {};
+        obdh_uart_take_rx_diagnostics(&diagnostics);
+        report_link_error(diagnostics);
 
         const rtems_status_code queue_status = rtems_message_queue_receive(
             queue_tx,
@@ -98,30 +159,8 @@ extern "C" rtems_task send_reports_task(rtems_task_argument argument)
         if (queue_status == RTEMS_SUCCESSFUL && received_size == sizeof(packet)) {
             const uint16_t frame_size = pus_build_tm(frame, &packet);
             if (frame_size != 0U) {
-                i2c_status = telemetry_i2c_write(frame, frame_size);
-            }
-
-            if (i2c_status == TELEMETRY_I2C_SUCCESS) {
-                consecutive_i2c_failures = 0U;
+                (void) obdh_uart_send_pus_frame(frame, frame_size);
             }
         }
-
-        const rtems_interval now = rtems_clock_get_ticks_since_boot();
-        if (now - last_tc_poll >= I2C_TC_POLL_TICKS) {
-            last_tc_poll = now;
-            i2c_status = poll_obdh_telecommand();
-        }
-
-        if (i2c_status != TELEMETRY_I2C_SUCCESS) {
-            /* Reset the peripheral before the next frame after NACK/error/timeout. */
-            ++consecutive_i2c_failures;
-            if (consecutive_i2c_failures == 1U ||
-                consecutive_i2c_failures % I2C_FAILURE_LOG_INTERVAL == 0U) {
-                printk("Telemetry I2C transmit failed: %d\n", (int) i2c_status);
-            }
-            i2c_status = telemetry_i2c_init();
-        }
-
-        rtems_task_wake_after(I2C_WORKER_TICKS);
     }
 }

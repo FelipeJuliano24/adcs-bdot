@@ -25,6 +25,14 @@ void put_float(uint8_t *destination, float value)
     memcpy(destination, &value, sizeof(value));
 }
 
+void put_u32_be(uint8_t *destination, uint32_t value)
+{
+    destination[0] = (uint8_t) (value >> 24U);
+    destination[1] = (uint8_t) (value >> 16U);
+    destination[2] = (uint8_t) (value >> 8U);
+    destination[3] = (uint8_t) value;
+}
+
 void append_orbit_location(pus_packet_t *pkt, uint16_t base_length)
 {
     float latitude_degrees = 0.0f;
@@ -106,6 +114,23 @@ void adcs_build_parser_error_telemetry(
     pkt->data[0] = (uint8_t) parser_status;
     pkt->data[1] = (uint8_t) (received_size >> 8);
     pkt->data[2] = (uint8_t) received_size;
+}
+
+void adcs_build_uart_link_error_telemetry(
+    pus_packet_t *pkt,
+    uint32_t error_flags,
+    uint32_t dropped_bytes)
+{
+    if (!pkt) {
+        return;
+    }
+
+    initialise_tm_packet(
+        pkt,
+        ADCS_TM_UART_LINK_ERROR,
+        ADCS_TM_UART_LINK_ERROR_PAYLOAD_SIZE);
+    put_u32_be(&pkt->data[0], error_flags);
+    put_u32_be(&pkt->data[4], dropped_bytes);
 }
 
 bool adcs_send_telemetry(const pus_packet_t *pkt)

@@ -5,7 +5,7 @@
 #include <rtems.h>
 #include "../../pus/pus_packet.h"
 
-// Fila global de telemetria ADCS -> task de downlink I2C.
+// Fila global de telemetria ADCS -> task do enlace UART OBDH.
 extern rtems_id queue_tx;
 
 // init centralizado

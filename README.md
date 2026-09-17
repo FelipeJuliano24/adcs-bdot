@@ -16,17 +16,32 @@
 
 The product tree of the firmware can be seen below:
 
-### I2C telemetry and telecommands
+### UART telemetry and telecommands
 
-The STM32F4 is the I2C master on I2C1 (PB6/SCL and PB7/SDA by default), at
-100 kHz, addressing the OBDH at `0x42`. Telemetry is sent as a complete PUS
-frame in a single I2C write transaction.
+The OBDH link uses the STM32F4 USART3 at **115200 bit/s, 8N1**, on
+`PD8/TX` and `PD9/RX`. This UART is reserved exclusively for PUS: do not send
+`printk`, shell, or debug-console output through it after the link is started.
+Use a separate physical debug interface in the flight harness.
 
-Because the ADCS is the bus master, the OBDH exposes telecommands through a
-polled mailbox: registers `0x00..0x01` contain the big-endian PUS frame length
-(`0` means empty), and register `0x02` contains the frame. The task polls it
-every 100 ms. The OBDH must keep the frame stable until it has been read, then
-clear the length. Telecommands are limited to 128 bytes.
+Cross-connect `PD8` to the OBDH RX and `PD9` to the OBDH TX, share ground, and
+verify compatible logic levels before integration. The defaults can be changed
+at build time with `OBDH_UART_BAUD_RATE`, `OBDH_UART_TX_GPIO_PORT/PIN`, and
+`OBDH_UART_RX_GPIO_PORT/PIN`; alternate pins must still be valid USART3 AF7
+pins on the selected STM32F4 package.
+
+Each raw PUS frame (`APID | length | service | subtype | data | CRC`) is
+transported between `0x7e` flag bytes. Values `0x7e` and `0x7d` within a frame
+are escaped as `0x7d` followed by the byte XOR `0x20`. The OBDH must use the
+same framing in both directions. This lets the receiver re-synchronise after
+a partial or corrupted serial frame instead of guessing PUS packet boundaries.
+
+RX is interrupt-driven: the USART ISR only moves bytes into a 2048-byte
+single-producer/single-consumer ring and signals the reports task with an
+RTEMS event. HDLC decoding, CRC validation, PUS dispatch, and ACK generation
+run in task context; the application never polls the UART receive register.
+Hardware line errors and ring overflow are emitted as
+`ADCS_TM_UART_LINK_ERROR` telemetry. Malformed framed input is reported as
+`ADCS_TM_PARSER_ERROR` with `PUS_PARSE_ERROR_TRANSPORT`.
 
 PUS command service (`8`) subtype `3` controls B-dot: one data byte, `0` to
 disable (torquer command is set to zero) and `1` to enable.

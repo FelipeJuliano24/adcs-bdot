@@ -37,6 +37,7 @@
 #define ADCS_TM_CONTROL_MODE 0x13
 #define ADCS_TM_BDOT         0x14
 #define ADCS_TM_PARSER_ERROR 0x15
+#define ADCS_TM_UART_LINK_ERROR 0x16
 
 #define ADCS_GYRO_STATUS_VALID 0x01
 #define ADCS_GYRO_STATUS_ERROR 0xff
@@ -73,6 +74,9 @@
  */
 #define ADCS_TM_PARSER_ERROR_PAYLOAD_SIZE 3U
 
+/* ADCS_TM_UART_LINK_ERROR: RX error flags and discarded-byte count, big-endian. */
+#define ADCS_TM_UART_LINK_ERROR_PAYLOAD_SIZE 8U
+
 /*
  * Every housekeeping payload ends with:
  *   [base]        orbit-prediction status
@@ -99,6 +103,11 @@ void adcs_build_parser_error_telemetry(
     pus_packet_t *pkt,
     int parser_status,
     uint16_t received_size);
+
+void adcs_build_uart_link_error_telemetry(
+    pus_packet_t *pkt,
+    uint32_t error_flags,
+    uint32_t dropped_bytes);
 
 /* Queue a fully-built ADCS telemetry packet for downlink transmission. */
 bool adcs_send_telemetry(const pus_packet_t *pkt);
