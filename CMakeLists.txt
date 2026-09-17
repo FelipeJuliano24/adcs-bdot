@@ -26,10 +26,10 @@ link_directories(${RTEMS_LIBRARY_DIRS})
 add_executable(app
 # --- DRIVERS ---
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/i3g4250d/i3g4250d.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/i2c/telemetry_i2c.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/spi_commons.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/telemetry/adcs_telemetry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/telemetry/telemetry.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/uart/uart.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/drivers/utils/HK_ADCS_STATUS.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pus/pus.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pus/pus_crc.cpp
@@ -67,15 +67,6 @@ target_link_options(app PRIVATE ${RTEMS_LDFLAGS}
 )
 
 target_link_libraries(app PRIVATE ${RTEMS_LIBRARIES})
-
-# post build e relatorio
-add_custom_command(
-    TARGET app POST_BUILD
-    COMMAND /rtems/rtems/6/bin/arm-rtems6-objcopy -O binary $<TARGET_FILE:app> ${CMAKE_SOURCE_DIR}/out/app.bin
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:app> ${CMAKE_SOURCE_DIR}/out/app.elf 
-    COMMAND ${CMAKE_COMMAND} -E echo "=== OTIMIZACAO EXTREMA APLICADA ==="
-    COMMAND /rtems/rtems/6/bin/arm-rtems6-size $<TARGET_FILE:app>
-)
 
 # post build e relatorio de memoria
 add_custom_command(

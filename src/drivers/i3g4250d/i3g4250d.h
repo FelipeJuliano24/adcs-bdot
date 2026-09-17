@@ -35,6 +35,7 @@
 #define GYRO_I3G4250D_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* Mapa de Registradores do Giroscópio I3G4250D */
 #define I3G4250D_WHO_AM_I      0x0F

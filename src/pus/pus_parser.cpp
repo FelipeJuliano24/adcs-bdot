@@ -2,22 +2,24 @@
 #include <string.h>
 #include "pus_crc.h"
 #include "pus_packet.h"
+#include "pus_parser.h"
 
 int pus_parse(const uint8_t *rx, uint16_t size, pus_packet_t *pkt) {
 
     if (!rx || !pkt){
-         return -6;
+         return PUS_PARSE_ERROR_INVALID_ARGUMENT;
     }
 
-    if (size < 8){
-        return -1;
+    /* A frame with no application data is still header (5) plus CRC (2). */
+    if (size < 7U){
+        return PUS_PARSE_ERROR_FRAME_TOO_SHORT;
     }  
 
    uint16_t rx_crc = (rx[size-2] << 8) | rx[size-1];
    uint16_t calc_crc = crc16_ccitt(rx, size - 2);
 
     if (rx_crc != calc_crc){
-        return -2;
+        return PUS_PARSE_ERROR_CRC;
     }
 
     pkt->apid    = (rx[0] << 8) | rx[1];
@@ -26,12 +28,12 @@ int pus_parse(const uint8_t *rx, uint16_t size, pus_packet_t *pkt) {
     pkt->subtype = rx[4];
 
     if ((uint16_t)(5 + pkt->length + 2) != size){
-       return -3;
+       return PUS_PARSE_ERROR_LENGTH;
     }
 
     if (pkt->length > MAX_DATA_SIZE){
         
-        return -5;
+        return PUS_PARSE_ERROR_DATA_TOO_LARGE;
     } 
 
     memcpy(pkt->data, &rx[5], pkt->length);
@@ -40,7 +42,7 @@ int pus_parse(const uint8_t *rx, uint16_t size, pus_packet_t *pkt) {
     pkt->crc = rx_crc;
 
     if (pkt->service == 0){
-        return -4;
+        return PUS_PARSE_ERROR_SERVICE;
     }
 
     return 0;

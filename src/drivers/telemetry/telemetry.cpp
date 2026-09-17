@@ -2,9 +2,13 @@
 #include <string.h>
 #include "../../pus/pus_crc.h"
 #include "../../pus/pus_packet.h"
-#include "adcs_telemetry.h"
+#include "telemetry.h"
 
 uint16_t pus_build_tm(uint8_t *tx, const pus_packet_t *pkt) {
+
+    if (!tx || !pkt || pkt->length > UINT8_MAX) {
+        return 0U;
+    }
 
     // 1. Header PUS
     tx[0] = (pkt->apid >> 8) & 0xFF;

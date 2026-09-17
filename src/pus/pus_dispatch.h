@@ -11,6 +11,7 @@ extern "C" {
 // subtypes exemplo
 #define SUBTYPE_SET_MODE            1
 #define SUBTYPE_SET_BDOT_GAIN       2
+#define SUBTYPE_SET_BDOT_ENABLED    3
 
 
 void send_ack(uint8_t result);
@@ -21,5 +22,4 @@ void pus_dispatch(pus_packet_t *pkt);
 #ifdef __cplusplus
 }
 #endif
-
 

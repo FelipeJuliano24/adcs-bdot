@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "housekeeping_task.h"
+
 extern "C" {
     #include "../../pus/pus_packet.h"
     #include "../../drivers/telemetry/adcs_telemetry.h"
@@ -27,22 +29,17 @@ static inline void send_pkt(pus_packet_t *pkt)
     }
 }
 
-rtems_task adcs_task(rtems_task_argument arg)
+extern "C" rtems_task housekeeping_task(rtems_task_argument arg)
 {
+    (void) arg;
+
     pus_packet_t pkt;
     uint32_t tick = 1;
-
-    static bool last_fault = false;
 
     while (1) {
 
         if (tick % 10 == 0) {
             if (check_telemetry(&pkt, false, ADCS_TM_GYRO) == 0)
-                send_pkt(&pkt);
-        }
-
-        if (tick % 20 == 0) {
-            if (check_telemetry(&pkt, false, ADCS_TM_BFIELD) == 0)
                 send_pkt(&pkt);
         }
 
@@ -56,14 +53,10 @@ rtems_task adcs_task(rtems_task_argument arg)
                 send_pkt(&pkt);
         }
 
-        //bool fault = adcs_has_fault();
-
-        //if (fault && !last_fault) {
-       //     if (check_telemetry(&pkt, true, HK_ADCS_FAULTS) == 0)
-       //         send_pkt(&pkt);
-       // }
-
-        //last_fault = fault;
+        if (tick % 100 == 75) {
+            if (check_telemetry(&pkt, true, HK_ADCS_FAULTS) == 0)
+                send_pkt(&pkt);
+        }
 
         tick++;
         if (tick >= 1000) tick = 0;

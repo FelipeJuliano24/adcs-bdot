@@ -15,6 +15,9 @@ void adcs_set_mode(uint8_t mode);
 // Recebe um float extraído dos bytes de pkt->data
 void adcs_set_bdot_gain(float gain);
 
+/* Enable (non-zero) or disable (zero) B-dot detumbling and torquer commands. */
+void adcs_set_bdot_enabled(uint8_t enabled);
+
 #ifdef __cplusplus
 }
 #endif

@@ -16,7 +16,7 @@
 /* ========================================================= */
 /* 3. Limites de Recursos do Sistema Operacional             */
 /* ========================================================= */
-#define CONFIGURE_MAXIMUM_TASKS 4        /* Init + ACS + WatchDog + 1 extra */
+#define CONFIGURE_MAXIMUM_TASKS 4        /* Init + B-dot + housekeeping + telemetry TX */
 #define CONFIGURE_MAXIMUM_SEMAPHORES 5   
 #define CONFIGURE_MAXIMUM_TIMERS 2
 
@@ -26,7 +26,7 @@
 /* ========================================================= */
 /* 4. Configuração de Memória                                */
 /* ========================================================= */
-#define CONFIGURE_EXTRA_TASK_STACKS (3 * RTEMS_MINIMUM_STACK_SIZE)
+#define CONFIGURE_EXTRA_TASK_STACKS (5 * RTEMS_MINIMUM_STACK_SIZE)
 
 /* ========================================================= */
 /* 5. Tarefa de Inicialização                                */
