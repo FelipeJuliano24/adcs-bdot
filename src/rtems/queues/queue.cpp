@@ -1,8 +1,7 @@
 #include "queues.h"
 
-// filas globais
+// Fila global de telemetria.
 rtems_id queue_tx;
-rtems_id queue_uart;
 
 // construtor genérico
 static rtems_id create_queue(
@@ -38,16 +37,8 @@ void queues_init(void) {
         sizeof(pus_packet_t)
     );
 
-    // fila de bytes (frame PUS)
-    queue_uart = create_queue(
-        'U','A','R','T',
-        20,
-        128   // buffer máximo TX
-    );
-
-    // validação básica
-    if (queue_tx == RTEMS_ID_NONE || queue_uart == RTEMS_ID_NONE) {
-        // erro crítico → travar sistema ou logar
+    if (queue_tx == RTEMS_ID_NONE) {
+        /* No task can operate safely without the downlink queue. */
         while (1);
     }
 }

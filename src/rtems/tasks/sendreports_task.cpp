@@ -3,12 +3,61 @@
 
 #include "../../drivers/i2c/telemetry_i2c.h"
 #include "../../drivers/telemetry/telemetry.h"
+#include "../../drivers/telemetry/adcs_telemetry.h"
+#include "../../pus/pus.h"
+#include "../../pus/pus_parser.h"
 #include "../queues/queues.h"
 
 namespace {
 
 constexpr rtems_interval I2C_REINITIALISATION_TICKS = 1000U;
 constexpr uint32_t I2C_FAILURE_LOG_INTERVAL = 100U;
+constexpr rtems_interval I2C_TC_POLL_TICKS = 100U;
+constexpr rtems_interval I2C_WORKER_TICKS = 10U;
+
+void report_i2c_receive_error(int error, uint16_t received_size)
+{
+    pus_packet_t error_packet;
+
+    adcs_build_parser_error_telemetry(&error_packet, error, received_size);
+    (void) adcs_send_telemetry(&error_packet);
+}
+
+telemetry_i2c_status_t poll_obdh_telecommand(void)
+{
+    uint8_t length_bytes[2] = {0U, 0U};
+    telemetry_i2c_status_t status = telemetry_i2c_read_register(
+        TELEMETRY_I2C_TC_LENGTH_REGISTER,
+        length_bytes,
+        sizeof(length_bytes));
+
+    if (status != TELEMETRY_I2C_SUCCESS) {
+        return status;
+    }
+
+    const uint16_t frame_size =
+        ((uint16_t) length_bytes[0] << 8U) | (uint16_t) length_bytes[1];
+    if (frame_size == 0U) {
+        return TELEMETRY_I2C_SUCCESS;
+    }
+
+    if (frame_size < PUS_FRAME_HEADER_SIZE + PUS_FRAME_CRC_SIZE ||
+        frame_size > TELEMETRY_I2C_TC_MAX_FRAME_SIZE) {
+        report_i2c_receive_error(PUS_PARSE_ERROR_LENGTH, frame_size);
+        return TELEMETRY_I2C_SUCCESS;
+    }
+
+    uint8_t frame[TELEMETRY_I2C_TC_MAX_FRAME_SIZE];
+    status = telemetry_i2c_read_register(
+        TELEMETRY_I2C_TC_DATA_REGISTER,
+        frame,
+        frame_size);
+    if (status == TELEMETRY_I2C_SUCCESS) {
+        pus_handle_rx(frame, frame_size);
+    }
+
+    return status;
+}
 
 } // namespace
 
@@ -25,6 +74,7 @@ extern "C" rtems_task send_reports_task(rtems_task_argument argument)
 
     telemetry_i2c_status_t i2c_status = TELEMETRY_I2C_BUS_ERROR;
     uint32_t consecutive_i2c_failures = 0U;
+    rtems_interval last_tc_poll = rtems_clock_get_ticks_since_boot();
     while (i2c_status != TELEMETRY_I2C_SUCCESS) {
         i2c_status = telemetry_i2c_init();
         if (i2c_status != TELEMETRY_I2C_SUCCESS) {
@@ -42,19 +92,26 @@ extern "C" rtems_task send_reports_task(rtems_task_argument argument)
             queue_tx,
             &packet,
             &received_size,
-            RTEMS_WAIT,
-            RTEMS_NO_TIMEOUT);
+            RTEMS_NO_WAIT,
+            0U);
 
-        if (queue_status != RTEMS_SUCCESSFUL || received_size != sizeof(packet)) {
-            continue;
+        if (queue_status == RTEMS_SUCCESSFUL && received_size == sizeof(packet)) {
+            const uint16_t frame_size = pus_build_tm(frame, &packet);
+            if (frame_size != 0U) {
+                i2c_status = telemetry_i2c_write(frame, frame_size);
+            }
+
+            if (i2c_status == TELEMETRY_I2C_SUCCESS) {
+                consecutive_i2c_failures = 0U;
+            }
         }
 
-        const uint16_t frame_size = pus_build_tm(frame, &packet);
-        if (frame_size == 0U) {
-            continue;
+        const rtems_interval now = rtems_clock_get_ticks_since_boot();
+        if (now - last_tc_poll >= I2C_TC_POLL_TICKS) {
+            last_tc_poll = now;
+            i2c_status = poll_obdh_telecommand();
         }
 
-        i2c_status = telemetry_i2c_write(frame, frame_size);
         if (i2c_status != TELEMETRY_I2C_SUCCESS) {
             /* Reset the peripheral before the next frame after NACK/error/timeout. */
             ++consecutive_i2c_failures;
@@ -63,8 +120,8 @@ extern "C" rtems_task send_reports_task(rtems_task_argument argument)
                 printk("Telemetry I2C transmit failed: %d\n", (int) i2c_status);
             }
             i2c_status = telemetry_i2c_init();
-        } else {
-            consecutive_i2c_failures = 0U;
         }
+
+        rtems_task_wake_after(I2C_WORKER_TICKS);
     }
 }

@@ -5,9 +5,8 @@
 #include <rtems.h>
 #include "../../pus/pus_packet.h"
 
-// IDs das filas (globais)
-extern rtems_id queue_tx;     // ADCS → PUS (pkt)
-extern rtems_id queue_uart;   // PUS → UART (bytes)
+// Fila global de telemetria ADCS -> task de downlink I2C.
+extern rtems_id queue_tx;
 
 // init centralizado
 void queues_init(void);

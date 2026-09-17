@@ -16,6 +16,21 @@
 
 The product tree of the firmware can be seen below:
 
+### I2C telemetry and telecommands
+
+The STM32F4 is the I2C master on I2C1 (PB6/SCL and PB7/SDA by default), at
+100 kHz, addressing the OBDH at `0x42`. Telemetry is sent as a complete PUS
+frame in a single I2C write transaction.
+
+Because the ADCS is the bus master, the OBDH exposes telecommands through a
+polled mailbox: registers `0x00..0x01` contain the big-endian PUS frame length
+(`0` means empty), and register `0x02` contains the frame. The task polls it
+every 100 ms. The OBDH must keep the frame stable until it has been read, then
+clear the length. Telecommands are limited to 128 bytes.
+
+PUS command service (`8`) subtype `3` controls B-dot: one data byte, `0` to
+disable (torquer command is set to zero) and `1` to enable.
+
 ```text
 rtems_project/
 ├── patches/            # Custom .patch files for the kernel

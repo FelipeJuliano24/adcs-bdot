@@ -21,7 +21,7 @@
 #define CONFIGURE_MAXIMUM_TIMERS 2
 
 // ADICIONADO: O RTEMS precisa alocar memória para suas Message Queues (vistas no task.cpp)
-#define CONFIGURE_MAXIMUM_MESSAGE_QUEUES 5 
+#define CONFIGURE_MAXIMUM_MESSAGE_QUEUES 1
 
 /* ========================================================= */
 /* 4. Configuração de Memória                                */
